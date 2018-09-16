@@ -9,6 +9,9 @@ int size = 1000, ////      size | (divs*layers)
     shapeWidth = size/6,
     shapeHeight = size/6,
     offCenter = size/4;
+boolean keyDown = false,
+        showRectangles = true;
+    
 
 PGraphics pg[] = new PGraphics[divs * layers];
 
@@ -39,7 +42,8 @@ void setup(){
 
 void draw(){
   printShapes();
-  printRectangles();
+  if(showRectangles)
+    printRectangles();
   getInput();
 }
 
@@ -63,6 +67,12 @@ void printRectangles(){
 }
 
 void getInput(){
+  if(keyPressed  && !keyDown){
+    keyDown = true;
+    if(key==' '){
+      showRectangles = !showRectangles;
+    }
+  }
   //para cambiar las variables de las figuras, segmentos y velocidad
   if(false)
     updateShapes();
@@ -87,4 +97,9 @@ void updateShapes(){
       pg[curr].endDraw();
     }
   }
+}
+
+
+void keyReleased(){
+  keyDown = false;
 }
