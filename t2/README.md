@@ -37,7 +37,13 @@ Complete la tabla:
 
 ## Discusión
 
-Se impolementó el triangle raster teniendo en cuenta las referencia propuestas, sé asignó un color a cada vector, se calcularon las coordenadas baricentricas y con base a estas se asignó el peso de los canales RGB para cada uno de los pixeles que cuenten con el centro dentro de la primitiva. Al momento de calcular las funciones de borde, fue importante definir el orden de los vectores del triangulo para permitir un recorrido antihorario de la primitiva
+### Rasterización y sombreado
+
+Se impolementó el triangle raster teniendo en cuenta las referencias propuestas, se asignó un color a cada vector, se calcularon las coordenadas baricentricas y con base a estas se asignó el peso de los canales RGB para cada uno de los pixeles que cuenten con el centro dentro de la primitiva. Al momento de calcular las funciones de borde, fue importante definir el orden de los vectores del triangulo para permitir un recorrido antihorario de la primitiva.
+
+### Anti-Aliasing
+
+En el algoritmo de anti-aliasing se tuvo en cuenta la referncia propuesta [algoritmo de anti-aliasing](https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-practical-implementation) de la cual escogimos implementar el método basado en muestreo (porcentaje de subpixeles que se encuentran dentro de la primitiva). En el programa se agregó un evento de teclado con la letra 'a' qué permite alternar entre el uso de esta técnica.
 
 ## Entrega
 
