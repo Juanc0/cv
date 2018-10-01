@@ -12,11 +12,12 @@ Vector v1, v2, v3;
 TimingTask spinningTask;
 boolean yDirection;
 // scaling is a power of 2
-int n = 4;
+int n = 5;
+boolean applyAA = true;
 
 // 2. Hints
-boolean triangleHint = true;
-boolean gridHint = true;
+boolean triangleHint = false;
+boolean gridHint = false;
 boolean debug = true;
 
 // 3. Use FX2D, JAVA2D, P2D or P3D
@@ -77,53 +78,71 @@ float edge(Vector p, Vector a, Vector b) {
   //return (a.x() - b.x()) * (p.y() - a.y()) - (a.y() - b.y()) * (p.y() - a.x());
 }
 
-void ccw(){
- float area = edge(v3,v1,v2);
- if(area < 0){ //positivo a la izq
-   Vector tmp = v2;
-   color ctmp = cv2;
-   v2 = v3;
-   cv2 = cv3;
-   v3 = tmp;
-   cv3 =ctmp;
-   print("ccw");
- }
+void ccw() {
+  float area = edge(v3, v1, v2);
+  if (area < 0) { //positivo a la izq
+    Vector tmp = v2;
+    color ctmp = cv2;
+    v2 = v3;
+    cv2 = cv3;
+    v3 = tmp;
+    cv3 = ctmp;
+  }
 }
 
+
+
+float w1, w2, w3, 
+  red, green, blue, 
+  area;
+Vector v_aux, v_world;
 
 // Implement this function to rasterize the triangle.
 // Coordinates are given in the frame system which has a dimension of 2^n
 void triangleRaster() {
   // frame.location converts points from world to frame
   // here we convert v1 to illustrate the idea
-  int my_size = (int)pow(2, n)/2;
-  float w1, w2, w3, red, green, blue, area = edge(v3,v1,v2);
-  Vector v_aux, v_world;
-
+  int my_size = (int)pow(2, n)/2, 
+    inside = 0;
+  area = edge(v3, v1, v2);
   pushStyle();
   for (int i = -my_size; i < my_size; i++) {
     for (int j = -my_size; j < my_size; j++) {
-      // Calcular funcion de borde
-      v_aux = new Vector(j + 0.5, i + 0.5);
-      v_world = frame.worldLocation(v_aux);
-      w1 = edge(v_world, v1, v2);
-      w2 = edge(v_world, v2, v3);
-      w3 = edge(v_world, v3, v1);
-           
-      if (w1 >= 0f && w2 >= 0f && w3 >= 0f) {
-        w1 /= area;
-        w2 /= area;
-        w3 /= area;
-        red = red(cv1)*w1 + red(cv2)*w2 + red(cv3)*w3;
-        green = green(cv1)*w1 + green(cv2)*w2 + green(cv3)*w3;
-        blue = blue(cv1)*w1 + blue(cv2)*w2 + blue(cv3)*w3;
-        noStroke();
-        fill(red, green, blue);
-        //point(v_aux.x(), v_aux.y());
-        rect(j, i, 1, 1);
+      if (applyAA) {
+        inside = 0;
+        for (int k=0; k<4; k++) {
+          v_aux = new Vector(j + k/2, i + k%2);
+          v_world = frame.worldLocation(v_aux);
+          w1 = edge(v_world, v1, v2);
+          w2 = edge(v_world, v2, v3);
+          w3 = edge(v_world, v3, v1);
+          if ( w1 >= 0f && w2 >= 0f && w3 >= 0f)
+            inside++;
+        }
+        //hasta aquí bien, calcula los inside's bien
+
+        if (inside == 4) {
+          printFromMiddlePoint(i, j, 0.5, 0.5, true,1);
+          // esto bien ajá
+        } else if (inside > 0 ) {
+          float cant = 0;
+          float increment = 1/pow(2, n);
+          
+          for (float i2=i; i2<i+1; i2+=increment) {
+            for (float j2=j; j2<j+1; j2+=increment) {
+              if(printFromMiddlePoint(i2, j2, increment/2, increment/2, false, 1))
+                cant++;
+            }
+          }
+          cant /= pow(2,n)*pow(2,n);
+          printFromMiddlePoint(i, j, 0.5, 0.5, true, cant);
+        }
+      } else {
+        printFromMiddlePoint(i, j, 0.5, 0.5, true, 1);
       }
     }
   }
+  
   popStyle();
   if (debug) {
     //println(frame.location(v1).x());
@@ -133,9 +152,35 @@ void triangleRaster() {
     popStyle();
     /*
     println("v1:" + v1.x() + "," + v1.y());
-    println("v2:" + v2.x() + "," + v2.y());
-    println("v3:" + v3.x() + "," + v3.y());*/
+     println("v2:" + v2.x() + "," + v2.y());
+     println("v3:" + v3.x() + "," + v3.y());*/
   }
+}
+
+boolean printFromMiddlePoint(float i, float j, float incrI, float incrJ, boolean wannaPrint, float mult) {
+  // Calcular funcion de borde
+  v_aux = new Vector(j + incrJ, i + incrI);
+  v_world = frame.worldLocation(v_aux);
+  w1 = edge(v_world, v1, v2);
+  w2 = edge(v_world, v2, v3);
+  w3 = edge(v_world, v3, v1);
+
+  if ((w1 >= 0f && w2 >= 0f && w3 >= 0f) || mult != 1) {
+    w1 /= area;
+    w2 /= area;
+    w3 /= area;
+    red = red(cv1)*w1 + red(cv2)*w2 + red(cv3)*w3;
+    green = green(cv1)*w1 + green(cv2)*w2 + green(cv3)*w3;
+    blue = blue(cv1)*w1 + blue(cv2)*w2 + blue(cv3)*w3;
+    if (wannaPrint) {
+      noStroke();
+      fill(red*mult, green*mult, blue*mult);
+      //fill(255, 255, 255);
+      rect(j, i, 1, 1);
+    }
+    return true;
+  }
+  return false;
 }
 
 void randomizeTriangle() {
@@ -185,4 +230,6 @@ void keyPressed() {
       spinningTask.run(20);
   if (key == 'y')
     yDirection = !yDirection;
+  if (key == 'a')
+    applyAA = !applyAA;
 }
