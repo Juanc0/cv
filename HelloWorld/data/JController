@@ -1,0 +1,13 @@
+JController
+TRIANGLE	Triangle Button	1	BUTTON	Botón 0	0	0.0	0.0
+SQUARE	Square Button	1	BUTTON	Botón 3	0	0.0	0.0
+CROSS	Cross Button	1	BUTTON	Botón 2	0	0.0	0.0
+CIRCLE	Circle Button	1	BUTTON	Botón 1	0	0.0	0.0
+L1	Left 1	1	BUTTON	Botón 6	0	0.0	0.0
+L2	Left 2	1	BUTTON	Botón 4	0	0.0	0.0
+R1	Right 1	1	BUTTON	Botón 7	0	0.0	0.0
+R2	Rigth 2	1	BUTTON	Botón 5	0	0.0	0.0
+X	X Position	3	SLIDER	Eje X	0	8.0	0.0
+Y	Y Position	3	SLIDER	Eje Y	0	8.0	0.0
+Z	Z Position	3	SLIDER	Eje Z	0	8.0	0.0
+RZ	Z Rotation	3	SLIDER	Rotación Z	0	8.0	0.0

@@ -39,7 +39,7 @@ int flockHeight = 720;
 int flockDepth = 600;
 boolean avoidWalls = true;
 
-int initBoidNum = 100; // amount of boids to start the program with
+int initBoidNum = 400; // amount of boids to start the program with
 ArrayList<Boid> flock;
 Frame avatar;
 boolean animate = true;
@@ -52,7 +52,7 @@ boolean splineSurface = false;
 int[] coefficients;
 ArrayList<Integer> ids;
 ArrayList<Vector> controlPoints = new ArrayList();
-int initControlPoints = 7;
+int initControlPoints = 3;
 HermitCurve hermit, hermit1;
 BezierCurve bezier;
 
@@ -69,7 +69,7 @@ void setup() {
     
   initControlPoints();
   hermit = new HermitCurve(controlPoints, 0.01, 0.2);
-  hermit1 = new HermitCurve(controlPoints, 0.01, 1.0);
+  hermit1 = new HermitCurve(controlPoints, 0.01, 0.0);
   bezier = new BezierCurve(controlPoints, 0.01);
 }
 
